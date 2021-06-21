@@ -4,7 +4,7 @@
 The purpose of this project is to create a one-to-four player game, using a client/server architecture. It has a client/server architecture.
 This project uses a multi-thread Boost::asio server and SFML graphical client.
 
-Made by :
+This project was a 3rd year EPITECH project and it was made by :
 - Adrian HOARAU (adrian.hoarau@epitech.eu)
 - Arthur BERTAUD (arthur.bertaud@epitech.eu)
 - Matthias VIRASSAMY (matthias.virassamy@epitech.eu)
