@@ -1,0 +1,13 @@
+[requires]
+boost/1.69.0@conan/stable
+sfml/2.5.1@bincrafters/stable
+zlib/1.2.11@conan/stable
+bzip2/1.0.6@conan/stable
+
+[options]
+sfml:audio=True
+sfml:graphics=True
+sfml:window=True
+
+[generators]
+cmake

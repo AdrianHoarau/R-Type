@@ -1,0 +1,397 @@
+<?xml version='1.0' encoding="UTF-8"?>
+<rfc>
+    <front>
+        <title>R-Type Protocol</title>
+
+        <author initials='C.B.' surname='Benjamin'
+                fullname='Coulon Benjamin'>
+            <organization>Epitech, Inc.</organization>
+        </author>
+
+        <author initials='H.A.' surname='Adrian'
+                fullname='Hoarau Adrian'>
+            <organization>Epitech, Inc.</organization>
+        </author>
+
+        <author initials='B.A.' surname='Arthur'
+                fullname='Bertaud Arthur'>
+            <organization>Epitech, Inc.</organization>
+        </author>
+
+        <author initials='V.M.' surname='Matthias'
+                fullname='Virassamy Matthias'>
+            <organization>Epitech, Inc.</organization>
+        </author>
+
+        <date month='November' year='2020' />
+
+        <area>General</area>
+        <workgroup>O.G Working Group</workgroup>
+        <keyword>RFC</keyword>
+        <keyword>Request for Comments</keyword>
+        <keyword>R-Type Protocol</keyword>
+        <keyword>RTP</keyword>
+        <abstract>
+            <t>This memo presents the way of using the
+            R-Type Protocol as the interaction between the client
+            side and the server side for commands and reply
+            codes. Request for Comments (RFC) series.</t>
+        </abstract>
+    </front>
+    <middle>
+        <section title="TABLE OF CONTENT">
+            <t>
+                <list style="numbers">
+                    <t>Introduction....................................................2</t>
+                    <t>Format..........................................................2
+                        <list style="numbers">
+                            <t>Model.......................................................3</t>
+
+                        </list>
+                    </t>
+                    <t>RTP Commands....................................................4
+                        <list style="numbers">
+                            <t>RTP Commands Arguments Types And Format.....................3</t>
+                            <t>Access Control Commands.....................................4</t>
+                            <t>RTP Ingame Commands.........................................5</t>
+                        </list>
+                    </t>
+                    <t>RTP Menu Replies................................................5</t>
+                    <t>RTP Ingame Replies..............................................5</t>
+                    <t>Format......................................................5</t>
+                </list>
+            </t>
+        </section>
+        <section title='INTRODUCTION'>
+            <t>The mid ‘80s was a renaissance for shooters. In 1985, Konami released Gradius.
+            Not long later, in 1987, Irem released R-Type. These are two of the most
+            important games in the genre. It’s completely stunning that, in its relative
+            infancy, Irem could shape a game as ingenious as R-Type. One of the premiere
+            side-scrolling shooters, R-Type moved a bit slower than your typical twitch
+            games, with a meticulous pace and almost leisurely scrolling. The idea wasn’t
+            to simply blast everything on the screen, although you could certainly try.
+            The idea was, quite simply, to stay alive. Naturally, given the claustrophobic
+            nature of the levels, swarming with enemies from every angle, this was never
+            an easy task. In this project, we had to make our own version of R-Type.</t>
+        </section>
+
+            <section title='FORMAT'>
+                <figure>
+                    <artwork>
+                    <![CDATA[
+                                        ------ client
+                                    ---
+                        -- game ----        -- client
+                     ---                ----
+                  ---               ---------- client
+                --      -- game ---
+               -     ---           ----------- client
+        server ------                   ----
+               -     --                     -- client
+                --     -
+                  ---   -- game -------------- client
+                     ---
+                        -- game -------------- client
+                                  --
+                                    ---------- client
+                                     --
+                                      -------- client
+                                         --
+                                            -- client
+                                            ]]></artwork>
+                </figure>
+            <section title='MODEL'>
+                <figure>
+                    <preamble>Here is the diagram of the MTP model</preamble>
+                    <artwork><![CDATA[
+
+                        /----------\              /----------\
+                        |          |  [Commands]  |          |
+                        |  Client  | <----------> |  Server  |
+                        |    RTP   |    [Reply]   |    RTP   |
+                        \----------/              \----------/
+
+                        ]]></artwork>
+                    </figure>
+                    <t>
+                        The RTP works on the principe of request/reply which is
+                        pretty simple. As we can see on the diagram, the client
+                        sends request to the server that will send back a reply
+                        depending on the request and on what he found.
+                    </t>
+                </section>
+
+                <section title='RTP COMMAND ARGUMENTS TYPES AND FORMAT'>
+                    <t>
+                        The commands sent by the client sometimes need an argument.
+                        Here will be described the different types accepted:<vspace blankLines='1'/>
+                        string: &#60;"string"&#62;<vspace blankLines='0'/>
+                        <list style="">
+                            <t>
+                                The String type is a character pointer of not defined
+                                size. Its content depends on the command before this argument type.
+                            </t>
+                        </list>
+                    </t>
+                </section>
+        </section>
+        <section title='RTP COMMANDS'>
+
+            <section title='ACCESS CONTROL COMMANDS'>
+                <t>
+                    These commands will be used to access or leave the server
+                    and launch a game. <vspace blankLines='1'/>
+                    These are the states which in a user can be:
+                    <figure>
+                        <artwork><![CDATA[
+                            +===========+
+                            | - NONE    |
+                            |           |
+                            | - INLOBBY |
+                            |           |
+                            | - READY   |
+                            |           |
+                            | - INGAME  |
+                            |           |
+                            | - OFF     |
+                            +===========+
+                        ]]></artwork>
+                    </figure>
+                    <vspace blankLines='2'/>NONE :
+                    <list style="">
+                        <t>
+                            When the User is in NONE state, he can either create
+                            a game by sending code<vspace blankLines='0'/>
+                            "201 &#60;NAME&#62;" to the server. the &#60;NAME&#62;
+                            will be the name of the Lobby.<vspace blankLines='0'/>
+                            or join an existing game by sending code<vspace blankLines='0'/>
+                            "202 &#60;NAME&#62;" to the server.<vspace blankLines='0'/>
+                            The &#60;NAME&#62; is the name of the Lobby that the
+                            user wants to join.<vspace blankLines='0'/>
+                            The User can of course leave the program by sending
+                            code<vspace blankLines='0'/>
+                            "200" to the server.:<vspace blankLines='0'/>
+                            An unexpected close on the control connection
+                            will cause the server to close the user.
+                        </t>
+                    </list>
+                    INLOBBY :
+                    <list style="">
+                        <t>
+                            When the User is in INLOBBY state, he can either says
+                            that he's ready by sending code<vspace blankLines='0'/>
+                            "203" to the server.<vspace blankLines='0'/>
+                            Or he can leaves the lobby by sending code<vspace blankLines='0'/>
+                            "204" to the server.<vspace blankLines='0'/>
+                            The User can receive the menu routine by sending code<vspace blankLines='0'/>
+                            "210" to the server.<vspace blankLines='0'/>
+                            The User can of course leave the program by sending code<vspace blankLines='0'/>
+                            "200" to the server.:<vspace blankLines='0'/>
+                            An unexpected close on the control connection
+                            will cause the server to close the user.
+                        </t>
+                    </list>
+                    READY :
+                    <list style="">
+                        <t>
+                            When the User is in READY state, he can either says that
+                            he's not ready anymore by sending code<vspace blankLines='0'/>
+                            "205" to the server.<vspace blankLines='0'/>
+                            Or he can launch the game by sending code<vspace blankLines='0'/>
+                            "206" to the server.<vspace blankLines='0'/>
+                            Or he can leaves the lobby by sending code<vspace blankLines='0'/>
+                            "204" to the server.<vspace blankLines='0'/>
+                            The User can receive the menu routine by sending code<vspace blankLines='0'/>
+                            "210" to the server.<vspace blankLines='0'/>
+                            The User can of course leave the program by sending code<vspace blankLines='0'/>
+                            "200" to the server.:<vspace blankLines='0'/>
+                            An unexpected close on the control connection
+                            will cause the server to close the user.
+                        </t>
+                    </list>
+                    INGAME :
+                    <list style="">
+                        <t>
+                            When the User is in INGAME state, all he can do is
+                            leave by sending code<vspace blankLines='0'/>
+                            "207" to the server.<vspace blankLines='0'/>
+                            An unexpected close on the control connection
+                            will cause the server to close the user.
+                        </t>
+                    </list>
+                    OFF :
+                    <list style="">
+                        <t>
+                            When the User is in OFF state, his firts interaction
+                            with the server will set his state to "NONE".
+                        </t>
+                    </list>
+                </t>
+            </section>
+
+            <section title='RTP INGAME COMMANDS'>
+                <t>
+                    /right (right arrow key) :<vspace blankLines='0'/>
+                    <list style="">
+                        <t>
+                            The /right command gives information that the user
+                            is moving to the right. This will be sent to the
+                            Server and it will change player's position. The
+                            player's position will be update when the Server
+                            will send back refreshed games informations to the
+                            Client.<vspace blankLines='0'/>
+                            The code "101" will be sent to the Server.
+                        </t>
+                    </list>
+                    /left (right arrow key) :<vspace blankLines='0'/>
+                    <list style="">
+                        <t>
+                            The /left command gives information that the user
+                            is moving to the left. This will be sent to the
+                            Server and it will change player's position. The
+                            player's position will be update when the Server
+                            will send back refreshed games informations to the
+                            Client.<vspace blankLines='0'/>
+                            The code "102" will be sent to the Server.
+                        </t>
+                    </list>
+                    /up (up arrow key) :<vspace blankLines='0'/>
+                    <list style="">
+                        <t>
+                            The /up command gives information that the user
+                            is moving to the top. This will be sent to the
+                            Server and it will change player's position. The
+                            player's position will be update when the Server
+                            will send back refreshed games informations to the
+                            Client.<vspace blankLines='0'/>
+                            The code "103" will be sent to the Server.
+                        </t>
+                    </list>
+                    /down (down arrow key) :<vspace blankLines='0'/>
+                    <list style="">
+                        <t>
+                            The /down command gives information that the user
+                            is moving to the bottom. This will be sent to the
+                            Server and it will change player's position. The
+                            player's position will be update when the Server
+                            will send back refreshed games informations to the
+                            Client.<vspace blankLines='0'/>
+                            The code "104" will be sent to the Server.
+                        </t>
+                    </list>
+                    /shoot (space bar) :<vspace blankLines='0'/>
+                    <list style="">
+                        <t>
+                            The /shoot command gives information that the user
+                            is shooting. This will be sent to the Server
+                            and it will create a new ally bullet starting at
+                            player's position. The player's bullet will be
+                            update when the Server will send back refreshed
+                            games informations to the Client.
+                            The code "105" will be sent to the Server.
+                        </t>
+                    </list>
+                </t>
+            </section>
+        </section>
+        <section title='RTP MENU REPLIES'>
+            <section title='FORMAT'>
+                <t>
+                    111<vspace blankLines='0'/>
+                    When the server will receive something from a client, it will
+                    send back the code "111" to validate that everything is OK.
+                    <vspace blankLines='1'/>
+
+                    121<vspace blankLines='0'/>
+                    The code "121" is the code that the Server will send to the
+                    Client when he creates or joins a lobby successfully.
+                    <vspace blankLines='1'/>
+
+                    131<vspace blankLines='0'/>
+                    The code "131" is the code that the Server will send to the
+                    Client when he starts a game successfully.
+                    <vspace blankLines='1'/>
+
+                    222<vspace blankLines='0'/>
+                    The code "222" is the basic error code for the server.
+                    When a command is invalid, the server will send back this code.
+                    <vspace blankLines='1'/>
+
+                    333<vspace blankLines='0'/>
+                    The server will send code "333" if a player is trying
+                    to take a room name that already exists.
+                    <vspace blankLines='1'/>
+
+                    444<vspace blankLines='0'/>
+                    The server will send code "444" if someone is trying to join
+                    a room which is already full.
+                    <vspace blankLines='1'/>
+
+                    555<vspace blankLines='0'/>
+                    The server will send code "555" is someone is trying to
+                    lauch a game when all the players aren't ready.
+                    <vspace blankLines='1'/>
+
+                    777<vspace blankLines='0'/>
+                    The server will send code "777" if someone is trying to join
+                    a room which doesn't exist.
+                    <vspace blankLines='1'/>
+
+                    <vspace blankLines='3'/>
+                    As a routine menu, the Server will send updates of
+                    menu informations to the client. To activate the routine the
+                    client must send the code "210" to the Server. Each time this
+                    code is received, a menu routine will be send to the client.
+                    <vspace blankLines='1'/>
+                    We will use a specific format of replies that will give
+                    informations precisely. The message will be preceded by the
+                    code "110".(the reply is sent as a string with an Enum for
+                    player, an Enum for state):
+                    <vspace blankLines='0'/>
+                    110 [(enum)PLAYER] [(enum)STATE]
+                </t>
+            </section>
+        </section>
+        <section title='RTP INGAME REPLIES'>
+            <section title='FORMAT'>
+                <t>
+                    111<vspace blankLines='0'/>
+                    When the server will receive something from a client, it will
+                    send back the code "111" to validate that everything is OK.
+                    <vspace blankLines='1'/>
+
+                    222<vspace blankLines='0'/>
+                    The code "222" is the basic error code for the server.
+                    When a command is invalid, the server will send back this code.
+                    <vspace blankLines='1'/>
+
+                    666<vspace blankLines='0'/>
+                    The server will send code "666" if a player is trying to
+                    do menu commands while its last game isn't finished yet.
+                    <vspace blankLines='1'/>
+
+                    135<vspace blankLines='0'/>
+                    The server will send code "135" if the game is finish,
+                    in order to put the players back in the lobby.
+                    <vspace blankLines='1'/>
+
+                    <vspace blankLines='3'/>
+                    As a routine, the Server will constantly send updates of
+                    everything in the game to the client. Every time the client
+                    sends something, the server will check the Request and
+                    treat it to execute the action. He will then return to the
+                    client a reply that will give information about every
+                    element of the game.<vspace blankLines='1'/>
+                    We will use a specific format of replies that will give
+                    informations precisely. The message will be preceded by the
+                    code "100".(the reply is sent as a string with an Enum for
+                    type, an Enum for state and a position x and y):
+                    <vspace blankLines='0'/>
+                    100 [(enum)TYPE] (int)Id|[(enum)ANIMATION_STATE]|[(bool)TO_UPDATE].[(int)posX].[(int)posY]
+                </t>
+            </section>
+        </section>
+    </middle>
+    <back>
+    </back>
+</rfc>
